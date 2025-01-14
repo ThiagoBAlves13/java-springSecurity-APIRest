@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.forum_hub.domain.autenticacao.DadosLogin;
+import br.com.forum_hub.domain.autenticacao.TokenService;
+import br.com.forum_hub.domain.usuario.Usuario;
 import jakarta.validation.Valid;
 
 
@@ -18,11 +20,16 @@ public class AutenticacaoController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    TokenService tokenService;
+
     @PostMapping("/login")
     public ResponseEntity<?> efetuarLogin(@RequestBody @Valid DadosLogin dados) {
 
         var autenticationToken = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
-        return ResponseEntity.ok(authenticationManager.authenticate(autenticationToken));
+
+        String tokenAcesso = tokenService.gerarToken((Usuario)authenticationManager.authenticate(autenticationToken).getPrincipal());
+        return ResponseEntity.ok(tokenAcesso);
 
     }
 
