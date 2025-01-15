@@ -21,4 +21,8 @@ public class UsuarioService implements UserDetailsService {
     public Usuario buscarUsuarioPorEmail(String email) {
         return usuarioRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
     }
+
+    public Usuario buscarUsuarioPorId(Long idUsuario) {
+        return usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
+    }
 }

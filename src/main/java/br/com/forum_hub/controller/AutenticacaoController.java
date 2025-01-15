@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.forum_hub.domain.autenticacao.DadosLogin;
+import br.com.forum_hub.domain.autenticacao.DadosRefreshToken;
 import br.com.forum_hub.domain.autenticacao.DadosToken;
 import br.com.forum_hub.domain.autenticacao.TokenService;
 import br.com.forum_hub.domain.usuario.Usuario;
+import br.com.forum_hub.domain.usuario.UsuarioService;
 import jakarta.validation.Valid;
 
 
@@ -24,6 +26,9 @@ public class AutenticacaoController {
     @Autowired
     TokenService tokenService;
 
+    @Autowired
+    UsuarioService usuarioService;
+
     @PostMapping("/login")
     public ResponseEntity<?> efetuarLogin(@RequestBody @Valid DadosLogin dados) {
 
@@ -31,9 +36,17 @@ public class AutenticacaoController {
 
         Usuario usuario = (Usuario)authenticationManager.authenticate(autenticationToken).getPrincipal();
 
-        String tokenAcesso = tokenService.gerarToken(usuario);
-        String refreshToken = tokenService.gerarRefreshToken(usuario);
-        return ResponseEntity.ok(new DadosToken(tokenAcesso, refreshToken));
+        return ResponseEntity.ok(tokenService.obterDadosToken(usuario));
+
+    }
+
+    @PostMapping("/atualizar-token")
+    public ResponseEntity<?> atualizarToken(@RequestBody @Valid DadosRefreshToken dados) {
+
+        var refreshToken = dados.refreshToken();
+        var usuario = usuarioService.buscarUsuarioPorId(Long.valueOf(tokenService.verificarToken(refreshToken)));
+        
+        return ResponseEntity.ok(tokenService.obterDadosToken(usuario));
 
     }
 

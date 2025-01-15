@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
@@ -63,6 +64,13 @@ public class TokenService {
         } catch (JWTVerificationException exception) {
             throw new RegraDeNegocioException("Token inválido!");
         }
+    }
+
+    public DadosToken obterDadosToken(Usuario usuario) {
+
+        String tokenAcesso = this.gerarToken(usuario);
+        String refreshToken = this.gerarRefreshToken(usuario);
+        return new DadosToken(tokenAcesso, refreshToken);
     }
 
 }
