@@ -38,6 +38,7 @@ public class TokenService {
 
     public String verificarToken(String token) {
         DecodedJWT decodedJWT;
+        System.err.println("DEBUG: " + token);
         try {
             Algorithm algorithm = Algorithm.HMAC256("12345678");
             JWTVerifier verifier = JWT.require(algorithm)
