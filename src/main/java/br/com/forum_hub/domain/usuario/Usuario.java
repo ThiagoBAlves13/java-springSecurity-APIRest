@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="usuarios")
+@Table(name = "usuarios")
 public class Usuario implements UserDetails {
 
     @Id
@@ -33,6 +33,15 @@ public class Usuario implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
+    
+    public Usuario(DadosCadastroUsuario dados, String senhaCriptografada) {
+        this.nomeCompleto = dados.nomeCompleto();
+        this.email = dados.email();
+        this.senha = senhaCriptografada;
+        this.nomeUsuario = dados.nomeUsuario();
+        this.biografia = dados.biografia();
+        this.miniBiografia = dados.miniBiografia();
+    }
 
     @Override
     public String getPassword() {
@@ -42,12 +51,6 @@ public class Usuario implements UserDetails {
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public Usuario(String nomeCompleto, String email, String senha) {
-        this.nomeCompleto = nomeCompleto;
-        this.email = email;
-        this.senha = senha;
     }
 
     public void alterarSenha(String senhaCriptografada) {
