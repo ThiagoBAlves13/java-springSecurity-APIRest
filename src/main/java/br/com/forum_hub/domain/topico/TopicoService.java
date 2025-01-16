@@ -1,8 +1,12 @@
 package br.com.forum_hub.domain.topico;
 
 import br.com.forum_hub.domain.curso.CursoService;
+import br.com.forum_hub.domain.usuario.Usuario;
+import br.com.forum_hub.domain.usuario.UsuarioService;
 import br.com.forum_hub.infra.exception.RegraDeNegocioException;
 import jakarta.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,18 +15,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class TopicoService {
 
-    private final TopicoRepository repository;
-    private final CursoService cursoService;
-
-    public TopicoService(TopicoRepository repository, CursoService cursoService) {
-        this.repository = repository;
-        this.cursoService = cursoService;
-    }
+    @Autowired
+    TopicoRepository repository;
+    @Autowired
+    CursoService cursoService;
 
     @Transactional
-    public Topico cadastrar(DadosCadastroTopico dados) {
+    public Topico cadastrar(DadosCadastroTopico dados, Usuario usuario) {
         var curso = cursoService.buscarPeloId(dados.cursoId());
-        var topico = new Topico(dados, curso);
+        var topico = new Topico(dados, curso, usuario);
         return repository.save(topico);
     }
     public Page<DadosListagemTopico> listar(String categoria, Long idCurso, Boolean semResposta, Boolean solucionados, Pageable paginacao) {
