@@ -485,3 +485,15 @@ ALTER TABLE topicos ADD autor_id BIGINT NOT NULL DEFAULT 1 ADD CONSTRAINT fk_aut
 2025-01-16 13:17:51.317648-03:00 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TOPICOSAUTOR_ID" not found; SQL statement:
 Select * from topicosAUTOR_ID [42102-224]
+2025-01-16 14:09:42.787481-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]ADD COLUMN token VARCHAR(64)"; expected "ALTER, ANALYZE"; SQL statement:
+ADD COLUMN token VARCHAR(64) [42001-224]
+2025-01-16 14:09:54.872658-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE usuarios\000d\000aADD COLUMN token VARCHAR(64)[*],\000d\000aADD COLUMN expiracao_token TIMESTAMP"; SQL statement:
+ALTER TABLE usuarios
+ADD COLUMN token VARCHAR(64),
+ADD COLUMN expiracao_token TIMESTAMP [42000-224]
+2025-01-16 14:09:59.666049-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE usuarios\000d\000aADD COLUMN token VARCHAR(64)[*],"; SQL statement:
+ALTER TABLE usuarios
+ADD COLUMN token VARCHAR(64), [42000-224]

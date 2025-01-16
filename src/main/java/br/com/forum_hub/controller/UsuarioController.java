@@ -2,12 +2,20 @@ package br.com.forum_hub.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.forum_hub.domain.usuario.DadosAlteracaoSenha;
 import br.com.forum_hub.domain.usuario.DadosCadastroUsuario;
+import br.com.forum_hub.domain.usuario.DadosEdicaoUsuario;
 import br.com.forum_hub.domain.usuario.DadosListagemUsuario;
 import br.com.forum_hub.domain.usuario.Usuario;
 import br.com.forum_hub.domain.usuario.UsuarioService;
@@ -26,6 +34,39 @@ public class UsuarioController {
         Usuario usuario = usuarioService.cadastrar(dados);
         var uri = uriBuilder.path("/{nomeUsuario}").buildAndExpand(usuario.getNomeUsuario()).toUri();
         return ResponseEntity.created(uri).body(new DadosListagemUsuario(usuario));
+    }
+
+    @GetMapping("/verificar-conta")
+    public ResponseEntity<?> verificarEmail(@RequestParam String codigo) {
+        usuarioService.verificarEmail(codigo);
+        return ResponseEntity.ok("Conta verificada com sucesso!");
+    }
+
+    @GetMapping("/usuario")
+    public ResponseEntity<?> getMethodName(@AuthenticationPrincipal Usuario usuarioLogado) {
+        Usuario usuario = usuarioService.buscarUsuarioPorNomeUsuario(usuarioLogado.getNomeUsuario());
+        return ResponseEntity.ok(usuario);
+    }
+
+    @PutMapping("/editar-perfil")
+    public ResponseEntity<?> editarPerfil(@RequestBody @Valid DadosEdicaoUsuario dados,
+            @AuthenticationPrincipal Usuario logado) {
+
+        Usuario usuario = usuarioService.editarPerfil(logado, dados);
+        return ResponseEntity.ok(new DadosListagemUsuario(usuario));
+    }
+
+    @PatchMapping("/alterar-senha")
+    public ResponseEntity<?> alterarSenha(@RequestBody @Valid DadosAlteracaoSenha dados,
+            @AuthenticationPrincipal Usuario logado) {
+        usuarioService.alterarSenha(dados, logado);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/desativar")
+    public ResponseEntity<?> desativarUsuario(@AuthenticationPrincipal Usuario logado) {
+        usuarioService.desativarUsuario(logado);
+        return ResponseEntity.noContent().build();
     }
 
 }
