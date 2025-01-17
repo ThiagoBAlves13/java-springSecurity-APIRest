@@ -52,7 +52,7 @@ public class Usuario implements UserDetails {
         return perfis;
     }
 
-    public Usuario(DadosCadastroUsuario dados, String senhaCriptografada) {
+    public Usuario(DadosCadastroUsuario dados, String senhaCriptografada, Perfil perfil) {
         this.nomeCompleto = dados.nomeCompleto();
         this.email = dados.email();
         this.senha = senhaCriptografada;
@@ -63,6 +63,7 @@ public class Usuario implements UserDetails {
         this.token = UUID.randomUUID().toString();
         this.expiracaoToken = LocalDateTime.now().plusMinutes(30);
         this.ativo = true;
+        this.perfis.add(perfil);
     }
 
     @Override

@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.forum_hub.domain.perfil.PerfilNome;
+import br.com.forum_hub.domain.perfil.PerfilService;
 import br.com.forum_hub.infra.email.EmailService;
 import br.com.forum_hub.infra.exception.RegraDeNegocioException;
 import jakarta.transaction.Transactional;
@@ -25,6 +27,9 @@ public class UsuarioService implements UserDetailsService {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    PerfilService perfilService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -45,7 +50,9 @@ public class UsuarioService implements UserDetailsService {
     @Transactional
     public Usuario cadastrar(DadosCadastroUsuario dados) {
         String senhaCriptografada = passwordEncoder.encode(dados.senha());
-        var usuario = new Usuario(dados, senhaCriptografada);
+
+        var perfil = perfilService.buscarPerfil(PerfilNome.ESTUDANTE);
+        var usuario = new Usuario(dados, senhaCriptografada, perfil);
 
         emailService.enviarEmailVerificacao(usuario);
         return usuarioRepository.save(usuario);
