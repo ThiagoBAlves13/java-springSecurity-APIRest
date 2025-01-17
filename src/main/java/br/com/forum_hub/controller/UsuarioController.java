@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.forum_hub.domain.perfil.DadosPerfil;
 import br.com.forum_hub.domain.usuario.DadosAlteracaoSenha;
 import br.com.forum_hub.domain.usuario.DadosCadastroUsuario;
 import br.com.forum_hub.domain.usuario.DadosEdicaoUsuario;
@@ -70,4 +71,10 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/adicionar-perfil/{id}")
+    public ResponseEntity<?> adicionarPerfil(@PathVariable Long id, @RequestBody @Valid DadosPerfil dados) {
+
+        Usuario usuario = usuarioService.adicionarPerfil(id, dados);
+        return ResponseEntity.ok(new DadosListagemUsuario(usuario));
+    }
 }

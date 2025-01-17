@@ -1,6 +1,7 @@
 package br.com.forum_hub.domain.usuario;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -44,8 +45,10 @@ public class Usuario implements UserDetails {
     private Boolean ativo;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "usuarios_perfis", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "perfil_id"))
-    private List<Perfil> perfis;
+    @JoinTable(name = "usuarios_perfis", 
+        joinColumns = @JoinColumn(name = "usuario_id"), 
+        inverseJoinColumns = @JoinColumn(name = "perfil_id"))
+    private List<Perfil> perfis = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -102,6 +105,10 @@ public class Usuario implements UserDetails {
 
     public void desativar() {
         this.ativo = false;
+    }
+
+    public void adicionarPerfil(Perfil perfil) {
+        this.perfis.add(perfil);
     }
 
 }
