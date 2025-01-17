@@ -39,11 +39,11 @@ public class Usuario implements UserDetails {
     private LocalDateTime expiracaoToken;
     private Boolean ativo;
     
-    private List<Perfil> perfil;
+    private List<Perfil> perfis;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return perfis;
     }
 
     public Usuario(DadosCadastroUsuario dados, String senhaCriptografada) {
