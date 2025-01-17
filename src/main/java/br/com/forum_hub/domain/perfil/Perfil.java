@@ -3,6 +3,8 @@ package br.com.forum_hub.domain.perfil;
 import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,6 +20,7 @@ public class Perfil implements GrantedAuthority{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private PerfilNome nome;
 
     @Override
