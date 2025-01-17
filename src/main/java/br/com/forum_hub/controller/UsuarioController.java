@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,10 +43,10 @@ public class UsuarioController {
         return ResponseEntity.ok("Conta verificada com sucesso!");
     }
 
-    @GetMapping("/usuario")
-    public ResponseEntity<?> getMethodName(@AuthenticationPrincipal Usuario usuarioLogado) {
-        Usuario usuario = usuarioService.buscarUsuarioPorNomeUsuario(usuarioLogado.getNomeUsuario());
-        return ResponseEntity.ok(usuario);
+    @GetMapping("/{nomeUsuario}")
+    public ResponseEntity<DadosListagemUsuario> exibirPerfil(@PathVariable String nomeUsuario){
+        var usuario = usuarioService.buscarUsuarioPorNomeUsuario(nomeUsuario);
+        return ResponseEntity.ok(new DadosListagemUsuario(usuario));
     }
 
     @PutMapping("/editar-perfil")
