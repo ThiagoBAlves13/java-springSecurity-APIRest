@@ -3,8 +3,7 @@ package br.com.forum_hub.domain.resposta;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import br.com.forum_hub.domain.autenticacao.HierarquiaService;
@@ -66,8 +65,7 @@ public class RespostaService {
         var topico = resposta.getTopico();
 
         if (hierarquiaService.usuarioNaoTemPermissoes(logado, topico.getAutor(), "ROLE_INSTRUTOR"))
-            throw new RegraDeNegocioException(
-                    "Você não pode marcar essa resposta como solução!");
+            throw new AccessDeniedException("Você não pode marcar essa resposta como solução!");
 
         if (topico.getStatus() == Status.RESOLVIDO)
             throw new RegraDeNegocioException(
