@@ -111,4 +111,8 @@ public class Usuario implements UserDetails {
         this.perfis.add(perfil);
     }
 
+    public void reativar() {
+        this.ativo = true;
+    }
+
 }

@@ -66,8 +66,8 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/desativar")
-    public ResponseEntity<?> desativarUsuario(@AuthenticationPrincipal Usuario logado) {
-        usuarioService.desativarUsuario(logado);
+    public ResponseEntity<?> desativarUsuario(@PathVariable Long id, @AuthenticationPrincipal Usuario logado) {
+        usuarioService.desativarUsuario(id, logado);
         return ResponseEntity.noContent().build();
     }
 
@@ -76,5 +76,11 @@ public class UsuarioController {
 
         Usuario usuario = usuarioService.adicionarPerfil(id, dados);
         return ResponseEntity.ok(new DadosListagemUsuario(usuario));
+    }
+
+    @PatchMapping("/reativar-conta/{id}")
+    public ResponseEntity<?> reativarUsuario(@PathVariable Long id) {
+        usuarioService.reativarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 }

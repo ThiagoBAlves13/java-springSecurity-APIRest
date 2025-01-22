@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.forum_hub.domain.autenticacao.HierarquiaService;
 import br.com.forum_hub.domain.perfil.DadosPerfil;
 import br.com.forum_hub.domain.perfil.Perfil;
 import br.com.forum_hub.domain.perfil.PerfilNome;
@@ -31,6 +32,9 @@ public class UsuarioService implements UserDetailsService {
 
     @Autowired
     PerfilService perfilService;
+
+    @Autowired
+    HierarquiaService hierarquiaService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -88,7 +92,11 @@ public class UsuarioService implements UserDetailsService {
     }
 
     @Transactional
-    public void desativarUsuario(Usuario usuario) {
+    public void desativarUsuario(Long idUsuario, Usuario logado) {
+        Usuario usuario = this.buscarUsuarioPorId(idUsuario);
+        if (hierarquiaService.usuarioNaoTemPermissoes(logado, usuario, "ROLE_ADMIN"))
+            throw new RegraDeNegocioException(
+                    "Não é possivel realizar essa operação!");
         usuario.desativar();
     }
 
@@ -99,5 +107,10 @@ public class UsuarioService implements UserDetailsService {
 
         usuario.adicionarPerfil(perfil);
         return usuario;
+    }
+
+    public void reativarUsuario(Long id) {
+        Usuario usuario = this.buscarUsuarioPorId(id);
+        usuario.reativar();
     }
 }
