@@ -38,7 +38,7 @@ public class ConfiguracoesSeguranca {
                                         req.requestMatchers(HttpMethod.PATCH, "/topicos/{idTopicos}/respostas/**").hasAnyRole("INSTRUTOR", "ESTUDANTE");
                                         req.requestMatchers(HttpMethod.PATCH, "/topicos/**").hasRole("MODERADOR");
                                         req.requestMatchers(HttpMethod.PATCH, "/adicionar-perfil/**").hasRole("ADMIN");
-                                        req.requestMatchers(HttpMethod.PATCH, "/reativar-conta/{id}").hasRole("ADMIN");
+                                        req.requestMatchers(HttpMethod.PATCH, "/reativar-conta/**").hasRole("ADMIN");
                                         req.anyRequest().authenticated();
                                 })
                                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
