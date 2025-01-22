@@ -1,16 +1,16 @@
 package br.com.forum_hub.domain.topico;
 
-import br.com.forum_hub.domain.curso.CursoService;
-import br.com.forum_hub.domain.usuario.Usuario;
-import br.com.forum_hub.domain.usuario.UsuarioService;
-import br.com.forum_hub.infra.exception.RegraDeNegocioException;
-import jakarta.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import br.com.forum_hub.domain.autenticacao.HierarquiaService;
+import br.com.forum_hub.domain.curso.CursoService;
+import br.com.forum_hub.domain.usuario.Usuario;
+import br.com.forum_hub.infra.exception.RegraDeNegocioException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class TopicoService {
@@ -19,6 +19,8 @@ public class TopicoService {
     TopicoRepository repository;
     @Autowired
     CursoService cursoService;
+    @Autowired
+    HierarquiaService hierarquiaService;
 
     @Transactional
     public Topico cadastrar(DadosCadastroTopico dados, Usuario usuario) {
@@ -38,15 +40,21 @@ public class TopicoService {
     }
 
     @Transactional
-    public Topico atualizar(DadosAtualizacaoTopico dados) {
+    public Topico atualizar(DadosAtualizacaoTopico dados, Usuario logado) {
         var topico = buscarPeloId(dados.id());
         var curso = cursoService.buscarPeloId(dados.cursoId());
+        if (hierarquiaService.usuarioNaoTemPermissoes(logado, topico.getAutor(), "ROLE_MODERADOR"))
+            throw new RegraDeNegocioException(
+                    "Você não pode editar esse tópico!");
         return topico.atualizarInformacoes(dados, curso);
     }
 
     @Transactional
-    public void excluir(Long id) {
+    public void excluir(Long id, Usuario logado) {
         var topico = buscarPeloId(id);
+        if (hierarquiaService.usuarioNaoTemPermissoes(logado, topico.getAutor(), "ROLE_MODERADOR"))
+            throw new RegraDeNegocioException(
+                    "Você não pode editar esse tópico!");
         if (topico.getStatus() == Status.NAO_RESPONDIDO)
             repository.deleteById(id);
         else
@@ -60,8 +68,11 @@ public class TopicoService {
     }
 
     @Transactional
-    public void fechar(Long id) {
+    public void fechar(Long id, Usuario logado) {
         var topico = buscarPeloId(id);
+        if (hierarquiaService.usuarioNaoTemPermissoes(logado, topico.getAutor(), "ROLE_MODERADOR"))
+            throw new RegraDeNegocioException(
+                    "Você não pode editar esse tópico!");
         topico.fechar();
     }
 }
